@@ -2,9 +2,7 @@
 
 **Due Oct 17 by 11:59pm Points 25 Submitting a file upload Available Oct 9 at 12am - Oct 17 at 11:59pm**
 
-Now that we've built some classes for chat messages, we can deploy them to Google App Engine. You can deploy this example to see a working chat application: 
-
-https://drive.google.com/file/d/1YItPFthsL1nnSQOn1x8QdtlixoQI5sC1/view?usp=sharing (Links to an external site.)
+Now that we've built some classes for chat messages, we can deploy them to Google App Engine. You can deploy this example to see a working chat application.
 
 Unfortunately, the messages are not stored. If our machine crashes, or if another server starts up, or if our requests are sent to different locations, our experience will be significantly diminished. 
 
