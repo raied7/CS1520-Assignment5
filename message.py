@@ -1,6 +1,7 @@
 import datetime
 from google.cloud import datastore
 
+# declare and initialize datastore client
 messages_stored = datastore.Client() 
 
 def clean(s):
@@ -77,6 +78,10 @@ class Message(datastore.Entity):
     def __ge__(self, other):
         return self.time >= other.time
 
+    """ method to convert Message object to entity with 'message' kind and a datastore generated ID
+        sets user, text, and time of the Entity
+        returns the Entity
+    """
     def to_Entity(self):
         kind = 'message'
         m_key = messages_stored.key(kind)
@@ -96,14 +101,9 @@ class ChatManager():
         self.messages = []    
 
     def add_message(self, msg):
-        """Add a message to our messages list."""
-
-        # self.messages.append(msg)        
-        # self.messages.sort()
+        """Add a message to the datastore client after converting it to an datastore Entity""" 
 
         messages_stored.put(msg.to_Entity())
-        # query = messages_stored.query(kind = 'message')
-        # query.order = ['-time']
 
 
     def create_message(self, user, text):
@@ -111,7 +111,10 @@ class ChatManager():
         
         self.add_message(Message(clean(user), clean(text)))
 
-
+    """ method to convert Entity to a Message object
+        gets the user, text, and time from the Entity
+        returns the Message object
+    """
     def to_Message(self, enti):
         user = enti['user']
         text = enti['text']
@@ -120,13 +123,9 @@ class ChatManager():
         return m
 
     def get_messages_output(self):
-        """Return the current message contents as a plain text string."""
-
-        # result = ''
-        # for msg in self.messages:
-        #     result += str(msg)
-        #     result += '\n'
-        # return result
+        """ Return the current message contents as a plain text string.
+            Converts entity in the query to a Message object first before appending to result string
+        """
 
         result = ''
         query = messages_stored.query(kind='message')
@@ -137,16 +136,15 @@ class ChatManager():
         return result
 
     def get_messages_html(self):
-        """Return the current message contents as HTML."""
-
-        # result = ''
-        # for msg in self.messages:
-        #     result += msg.to_html()
-        #     result += '\n'
-        # return result
+        """ Return the current message contents as HTML.
+            Converts entity in the query to a Message object first...
+            ...before converting to HTML and appending to result string
+        """
 
         result = ''
         query = messages_stored.query(kind='message')
+        # Order query by earliest time
+        query.order = ['time']
         for entity in query.fetch():
             msg = self.to_Message(entity)
             result += msg.to_html()
@@ -155,11 +153,11 @@ class ChatManager():
 
 
     def clear_messages_before(self, time):
-        """Remove all messages prior to a given time."""
+        """ Remove all messages prior to a given time.
+            Converts entity in the query to a Message object to compare time
+            Deletes entity from datasore client
+        """
         
-        # while len(self.messages) > 0 and self.messages[0].time < time:
-        #     self.messages.pop(0)
-
         query = messages_stored.query(kind='message')
         for entity in query.fetch():
             msg = self.to_Message(entity)
