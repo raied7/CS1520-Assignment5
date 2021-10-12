@@ -1,0 +1,23 @@
+body {
+    font-family: Helvetica, sans-serif;
+}
+
+.Text {
+    padding: 0.125em;
+    background: white;
+}
+
+.User {
+    font-weight: bold;
+}
+
+.Time {
+    font-family: Courier, monospace;
+    font-size: 0.75em;
+}
+
+.Message {
+    margin: 0.25em;
+    padding: 0.5em;
+    background: powderblue; 
+}
